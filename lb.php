@@ -1,41 +1,32 @@
 <?php
 
+use Books\Book;
+
 $books = [
-    1 => [
-        'title' => 'The Great Gatsby',
-        'author' => 'F. Scott Fitzgerald',
-        'status' => 'available'
-    ],
-    2 => [
-        'title' => '1984',
-        'author' => 'George Orwell',
-        'status' => 'available'
-    ],
-    3 => [
-        'title' => 'Pride and Prejudice',
-        'author' => 'Jane Austen',
-        'status' => 'available'
-    ]
+    new Book("The Great Gatsby", "F. Scott Fitzgerald", 'available'), 
+    new Book("1984", "George Orwell", 'available'),
+    new Book("Pride and Prejudice", "Jane Austen", 'available'),
 ];
 
 function addBook(&$books) {
     $title = readline("Enter title: ");
     $author = readline("Enter author: ");
-    $books[] = ['title' => $title, 'author' => $author];
+    $books[] = new Book($title, $author, 'available');
 }
 
 function deleteBook(&$books) {
     $id = readline("Enter book ID you want to delete: ");
-    if (isset($books[$id])) {
-        echo "\nDeleted book ID: {$id} // Title: ". $books[$id]['title'] . " // Author: " . $books[$id]['author']. "\n\n";
-        unset($books[$id]);
+    if (isset($books[$id - 1])) {
+        echo "Deleted book ID: {$id}" . $books[$id-1]->display();
+        unset($books[$id - 1]);
     } else {
         echo "No book found!";
     }
 }
 
 function displayBook($id, $book) {
-    echo "ID: {$id} // Title: ". $book['title'] . " // Author: " . $book['author']. "\n\n";
+    $newId = $id + 1;
+    echo "ID: {$newId}" . $book->display();
 }
 
 function displayAllBooks(&$books) {
@@ -46,7 +37,7 @@ function displayAllBooks(&$books) {
 
 function getAndDisplayBook(&$books) {
     $id = readline("Enter book id: ");
-    displayBook($id, $books[$id]);
+    displayBook($id - 1, $books[$id - 1]);
 }
 
 function exitLoop(&$continue) {
@@ -56,6 +47,16 @@ function exitLoop(&$continue) {
 
 function errorMsg() {
     echo "Invalid Choice!\n";
+}
+
+function readStatus(&$books) {
+    $id = readline("Enter book id: ");
+    if (isset($books[$id - 1])) {
+        $status = readline("Enter the status number (1 => available // 2 => not available): ");
+        $books[$id-1]->setStatus($status);
+    } else {
+        echo "No book found!\n";
+    }
 }
 
 function secret(&$books) {
@@ -71,7 +72,8 @@ do {
     echo "2 - show a book\n";
     echo "3 - add a book\n";
     echo "4 - delete a book\n";
-    echo "5 - quit\n\n";
+    echo "5 - set status of book\n";
+    echo "6 - quit\n\n";
     $choice = readline();
     $continue = true;
 
@@ -86,16 +88,23 @@ do {
             break;
         case 3:
             addBook($books);
+
             break;
         case 4:
             deleteBook($books);
+
             break;
         case 5:
+            readStatus($books);
+
+            break;
+        case 6:
             exitLoop($continue);
 
             break;
         case 13:
             secret($books);
+
             break;
         default:
             errorMsg();
