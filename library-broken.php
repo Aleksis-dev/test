@@ -3,15 +3,18 @@
 $books = [
     1 => [
         'title' => 'The Great Gatsby',
-        'author' => 'F. Scott Fitzgerald'
+        'author' => 'F. Scott Fitzgerald',
+        'status' => 'available'
     ],
     2 => [
         'title' => '1984',
-        'author' => 'George Orwell'
+        'author' => 'George Orwell',
+        'status' => 'available'
     ],
     3 => [
         'title' => 'Pride and Prejudice',
-        'author' => 'Jane Austen'
+        'author' => 'Jane Austen',
+        'status' => 'available'
     ]
 ];
 
@@ -23,11 +26,40 @@ function addBook(&$books) {
 
 function deleteBook(&$books) {
     $id = readline("Enter book ID you want to delete: ");
-    unset($books[$id]);
+    if (isset($books[$id])) {
+        echo "\nDeleted book ID: {$id} // Title: ". $books[$id]['title'] . " // Author: " . $books[$id]['author']. "\n\n";
+        unset($books[$id]);
+    } else {
+        echo "No book found!";
+    }
 }
 
 function displayBook($id, $book) {
     echo "ID: {$id} // Title: ". $book['title'] . " // Author: " . $book['author']. "\n\n";
+}
+
+function displayAllBooks(&$books) {
+    foreach ($books as $id => $book) {
+        displayBook($id, $book);
+    }
+}
+
+function getAndDisplayBook(&$books) {
+    $id = readline("Enter book id: ");
+    displayBook($id, $books[$id]);
+}
+
+function exitLoop(&$continue) {
+    echo "Goodbye!\n";
+    $continue = false;
+}
+
+function errorMsg() {
+    echo "Invalid Choice!\n";
+}
+
+function secret(&$books) {
+    print_r($books);
 }
 
 
@@ -45,14 +77,11 @@ do {
 
     switch ($choice) {
         case 1:
-            foreach ($books as $id => $book) {
-                displayBook($id, $book);
-            }
+            displayAllBooks($books);
 
             break;
         case 2:
-            $id = readline("Enter book id: ");
-            displayBook($id, $books[$id]);
+            getAndDisplayBook($books);
 
             break;
         case 3:
@@ -62,14 +91,16 @@ do {
             deleteBook($books);
             break;
         case 5:
-            echo "Goodbye!\n";
-            $continue = false;
+            exitLoop($continue);
+
             break;
         case 13:
-            print_r($books);
+            secret($books);
             break;
         default:
-            echo "Invalid choice\n";
+            errorMsg();
+
+            break;
     };
 
 } while ($continue == true);
