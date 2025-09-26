@@ -2,27 +2,28 @@
 
 $books = [
     1 => [
-        'title' => 'The Great Gatsby'
+        'title' => 'The Great Gatsby',
         'author' => 'F. Scott Fitzgerald'
-    ]
+    ],
     2 => [
-        'title' => '1984'
+        'title' => '1984',
         'author' => 'George Orwell'
-    ]
+    ],
     3 => [
-        'title' => 'Pride and Prejudice'
+        'title' => 'Pride and Prejudice',
         'author' => 'Jane Austen'
     ]
 ];
 
 function addBook(&$books) {
     $title = readline("Enter title: ");
+    $author = readline("Enter author: ");
     $books[] = ['title' => $title, 'author' => $author];
 }
 
-function deleteBook() {
+function deleteBook(&$books) {
     $id = readline("Enter book ID you want to delete: ");
-    unset($bookList[$id]);
+    unset($books[$id]);
 }
 
 function displayBook($id, $book) {
@@ -40,6 +41,7 @@ do {
     echo "4 - delete a book\n";
     echo "5 - quit\n\n";
     $choice = readline();
+    $continue = true;
 
     switch ($choice) {
         case 1:
@@ -64,7 +66,7 @@ do {
             $continue = false;
             break;
         case 13:
-            print_r($books); // hidden option to see full $books content
+            print_r($books);
             break;
         default:
             echo "Invalid choice\n";
